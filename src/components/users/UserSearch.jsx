@@ -1,26 +1,33 @@
 import React, { useContext, useState } from 'react';
 import GithubContext from '../../context/github/GithubContext';
+import AlertContext from '../../context/alert/AlertContext';
+import { searchUsers } from '../../context/github/GithubAction';
 
 function UserSearch() {
   const [text, setText] = useState('');
 
-  const { users, searchUsers, clearUsers } = useContext(GithubContext);
+  const { users, dispatch } = useContext(GithubContext);
+
+  const { setAlert } = useContext(AlertContext);
 
   const handleChange = (e) => {
     setText(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (text === '') {
-      alert('내용을 입력해주세요');
+      setAlert('내용을 입력해주세요', 'error');
     } else {
-      //유저찾기
-      searchUsers(text);
+      // 검색어로 유저찾기
+      dispatch({ type: 'SET_LOADING' });
+      const users = await searchUsers(text);
+      dispatch({ type: 'GET_USERS', payload: users });
       setText('');
     }
   };
+
   return (
     <div
       className='grid grid-cols-1 xl:grid-cols-2 
@@ -46,9 +53,10 @@ function UserSearch() {
       </div>
       {users.length > 0 && (
         <div>
-          <button className='btn btn-ghost btn-lg' onClick={clearUsers}>
+          <button className='btn btn-ghost btn-lg' onClick={() => dispatch({ type: 'CLEAR_USERS' })}>
             CLEAR
           </button>
+          ​
         </div>
       )}
     </div>
