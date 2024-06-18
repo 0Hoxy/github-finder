@@ -1,14 +1,15 @@
-import { useContext, useEffect } from 'react';
+import { useContext /*useEffect*/ } from 'react';
 import Spinner from '../layout/Spinner';
 import UserItem from './UserItem';
 import GithubContext from '../../context/github/GithubContext';
 
 function UserResult() {
-  const { users, loading, fetchUsers } = useContext(GithubContext);
+  const { users, loading /*fetchUsers*/ } = useContext(GithubContext);
 
-  useEffect(() => {
-    fetchUsers();
-  }, []); //앱 시작시 실행됨
+  // useEffect(() => {
+  //   fetchUsers();
+  //   // eslint-disable-next-line
+  // }, []); //앱 시작시 실행됨
 
   if (!loading) {
     return (
